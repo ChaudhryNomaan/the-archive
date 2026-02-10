@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import Models from './pages/Models';
-import Gallery from './pages/gallery';
-import Bespoke from './pages/bespoke';
+import Gallery from './pages/Gallery';
+import Bespoke from './pages/Bespoke';
 
 export default function App() {
   const location = useLocation();
