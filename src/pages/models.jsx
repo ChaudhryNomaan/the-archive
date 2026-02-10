@@ -117,7 +117,7 @@ export default function Models() {
   return (
     <>
       {loading && <LuxuryPreloader progress={loadProgress} />}
-      <div style={{ 
+      <div className="models-root" style={{ 
         backgroundColor: '#000', 
         color: '#fff', 
         overflowX: 'hidden',
@@ -125,97 +125,39 @@ export default function Models() {
         transition: 'opacity 2s ease'
       }}>
         
-        {/* 1. ANIMATED HERO: THE STATEMENT */}
-        <section style={{ 
-          height: '100vh', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          padding: '0 5%' 
-        }}>
-          <div style={{ 
-            position: 'absolute', 
+        {/* 1. ANIMATED HERO */}
+        <section className="hero-section">
+          <div className="parallax-bg-text" style={{ 
             transform: `translateY(${scrollY * 0.5}px)`, 
-            fontSize: '25vw', 
-            fontWeight: '900', 
-            opacity: 0.03, 
-            letterSpacing: '-1.5vw',
-            whiteSpace: 'nowrap',
-            zIndex: 0,
-            pointerEvents: 'none',
-            transition: 'transform 0.1s linear'
           }}>
             PERFECTION
           </div>
           
           <div style={{ zIndex: 1, textAlign: 'center' }}>
-            <h2 style={{ 
-              fontSize: 'clamp(10px, 1vw, 14px)', 
-              letterSpacing: 'clamp(10px, 1.5vw, 20px)', 
-              opacity: 0.4, 
-              marginBottom: '20px',
-              animation: 'fadeInUp 1.5s ease'
-            }}>
-              THE 2026 COLLECTION
-            </h2>
-            <h1 style={{ 
-              fontSize: 'clamp(3.5rem, 10vw, 12rem)', 
-              fontWeight: '200', 
-              fontFamily: 'serif', 
-              margin: 0, 
-              fontStyle: 'italic',
-              lineHeight: 0.9,
-              animation: 'fadeInUp 2s ease'
-            }}>
-              The Pantheon
-            </h1>
+            <h2 className="hero-sub">THE 2026 COLLECTION</h2>
+            <h1 className="hero-main">The Pantheon</h1>
           </div>
         </section>
 
         {/* 2. THE MODELS EXHIBITION */}
         {MODELS_COLLECTION.map((car, index) => (
-          <section key={car.id} style={{ 
-            minHeight: '150vh', 
-            padding: '0 5%', 
-            position: 'relative',
-            marginBottom: '10vh'
-          }}>
+          <section key={car.id} className="model-exhibition-section">
             
-            <div style={{ 
-              position: 'sticky', 
-              top: '12%', 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'flex-start',
-              zIndex: 10,
-              paddingBottom: '2vh'
-            }}>
-              <div style={{ animation: 'fadeInLeft 1s ease' }}>
-                 <h3 style={{ fontSize: 'clamp(10px, 0.8vw, 12px)', letterSpacing: '5px', opacity: 0.4, marginBottom: '5px' }}>{car.series}</h3>
-                 <h2 style={{ fontSize: 'clamp(2.5rem, 7vw, 7rem)', fontWeight: '200', margin: 0, letterSpacing: '8px' }}>{car.name}</h2>
+            <div className="sticky-header">
+              <div className="header-text-group">
+                 <h3 className="car-series">{car.series}</h3>
+                 <h2 className="car-name">{car.name}</h2>
               </div>
               
               <button 
                 onClick={() => navigate(car.path)}
                 className="luxury-button-outline"
-                style={{ 
-                  background: 'none', border: 'none', color: '#fff', fontSize: 'clamp(9px, 0.7vw, 11px)', 
-                  letterSpacing: '4px', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.3)', 
-                  paddingBottom: '8px', marginTop: '30px', transition: 'all 0.4s ease'
-                }}
               >
                 EXPLORE
               </button>
             </div>
 
-            <div style={{ 
-              width: '100%', 
-              height: 'clamp(400px, 80vh, 900px)', 
-              backgroundColor: '#0a0a0a', 
-              overflow: 'hidden',
-              position: 'relative',
-              marginTop: '5vh'
-            }}>
+            <div className="video-viewport">
               <video 
                 autoPlay 
                 muted 
@@ -234,94 +176,157 @@ export default function Models() {
               </video>
             </div>
 
-            <div style={{ 
-              display: 'flex', 
-              marginTop: '5vh', 
-              justifyContent: index % 2 === 0 ? 'flex-end' : 'flex-start',
-              paddingBottom: '10vh'
-            }}>
-              <div style={{ 
-                width: '100%',
-                maxWidth: 'clamp(300px, 40vw, 600px)', 
-                padding: 'clamp(30px, 5vw, 80px)', 
-                backgroundColor: 'rgba(5, 5, 5, 0.8)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255,255,255,0.05)',
-                zIndex: 5
-              }}>
-                <p style={{ fontSize: 'clamp(1.2rem, 2vw, 2rem)', fontFamily: 'serif', fontStyle: 'italic', marginBottom: '30px' }}>
-                  "{car.quote}"
-                </p>
-                <p style={{ fontSize: 'clamp(13px, 1vw, 15px)', lineHeight: '1.8', opacity: 0.5, marginBottom: '40px' }}>
-                  {car.details}
-                </p>
+            <div className={`details-row ${index % 2 === 0 ? 'row-reverse' : ''}`}>
+              <div className="details-card">
+                <p className="car-quote">"{car.quote}"</p>
+                <p className="car-details-text">{car.details}</p>
                 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', marginBottom: '40px' }}>
+                <div className="specs-grid">
                   {car.specs.map(spec => (
-                    <div key={spec}>
-                      <p style={{ fontSize: 'clamp(12px, 1.2vw, 16px)', fontWeight: '300' }}>{spec}</p>
-                      <div style={{ width: '15px', height: '1px', backgroundColor: 'rgba(255,255,255,0.2)', marginTop: '8px' }} />
+                    <div key={spec} className="spec-item">
+                      <p>{spec}</p>
+                      <div className="spec-line" />
                     </div>
                   ))}
                 </div>
 
-                <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
-                  <button 
-                    onClick={() => navigate('/bespoke')}
-                    style={{ flex: '1 1 150px', padding: '18px', background: '#fff', color: '#000', border: 'none', fontSize: '10px', letterSpacing: '2px', fontWeight: '700', cursor: 'pointer', transition: '0.3s' }}
-                  >
-                    BESPOKE
-                  </button>
-                  <button 
-                    onClick={() => navigate('/gallery')}
-                    style={{ flex: '1 1 150px', padding: '18px', background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', fontSize: '10px', letterSpacing: '2px', cursor: 'pointer', transition: '0.3s' }}
-                  >
-                    GALLERY
-                  </button>
+                <div className="actions-flex">
+                  <button onClick={() => navigate('/bespoke')} className="btn-primary">BESPOKE</button>
+                  <button onClick={() => navigate('/gallery')} className="btn-secondary">GALLERY</button>
                 </div>
               </div>
             </div>
           </section>
         ))}
 
-        {/* 3. RESPONSIVE CTA */}
-        <section style={{ 
-          height: '80vh', 
-          display: 'flex', 
-          flexDirection: 'column', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          textAlign: 'center',
-          padding: '0 5%'
-        }}>
-          <div style={{ width: '1px', height: '15vh', background: 'linear-gradient(to bottom, transparent, #fff)', marginBottom: '40px' }} />
-          <h3 style={{ fontSize: 'clamp(1.5rem, 5vw, 4rem)', fontWeight: '100', fontFamily: 'serif', maxWidth: '800px' }}>
-            Every Great Journey Starts With A Whisper.
-          </h3>
-          <button 
-            onClick={() => navigate('/')}
-            style={{ 
-              marginTop: '40px', padding: '20px 50px', background: 'none', border: '1px solid rgba(255,255,255,0.3)', 
-              color: '#fff', letterSpacing: '5px', fontSize: '11px', cursor: 'pointer', transition: 'all 0.5s'
-            }}
-          >
-            RETURN HOME
-          </button>
+        {/* 3. CLOSING CTA */}
+        <section className="closing-cta">
+          <div className="divider-line" />
+          <h3 className="closing-text">Every Great Journey Starts With A Whisper.</h3>
+          <button onClick={() => navigate('/')} className="return-btn">RETURN HOME</button>
         </section>
 
         <style>{`
-          @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
+          /* BASE RESPONSIVE CLASSES */
+          .hero-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5%;
+            position: relative;
           }
-          @keyframes fadeInLeft {
-            from { opacity: 0; transform: translateX(-40px); }
-            to { opacity: 1; transform: translateX(0); }
+
+          .parallax-bg-text {
+            position: absolute;
+            font-size: 25vw;
+            font-weight: 900;
+            opacity: 0.03;
+            letter-spacing: -1.5vw;
+            white-space: nowrap;
+            z-index: 0;
+            pointer-events: none;
+            transition: transform 0.1s linear;
           }
-          .luxury-button-outline:hover {
-            opacity: 1 !important;
-            border-bottom: 1px solid #fff !important;
-            letter-spacing: 6px !important;
+
+          .hero-sub {
+            font-size: clamp(10px, 1.2vw, 14px);
+            letter-spacing: clamp(10px, 1.5vw, 20px);
+            opacity: 0.4;
+            margin-bottom: 20px;
+            animation: fadeInUp 1.5s ease;
+          }
+
+          .hero-main {
+            font-size: clamp(3.5rem, 12vw, 12rem);
+            font-weight: 200;
+            font-family: serif;
+            margin: 0;
+            font-style: italic;
+            line-height: 0.9;
+            animation: fadeInUp 2s ease;
+          }
+
+          .model-exhibition-section {
+            min-height: 150vh;
+            padding: 0 5%;
+            position: relative;
+            margin-bottom: 10vh;
+          }
+
+          .sticky-header {
+            position: sticky;
+            top: 12%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            z-index: 10;
+            padding-bottom: 2vh;
+            background: linear-gradient(to bottom, #000 60%, transparent);
+          }
+
+          .car-series { font-size: clamp(10px, 0.8vw, 12px); letter-spacing: 5px; opacity: 0.4; margin-bottom: 5px; text-transform: uppercase; }
+          .car-name { font-size: clamp(2.5rem, 8vw, 7rem); fontWeight: 200; margin: 0; letter-spacing: 4px; }
+
+          .luxury-button-outline {
+            background: none; border: none; color: #fff; fontSize: clamp(9px, 0.7vw, 11px);
+            letterSpacing: 4px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 8px; margin-bottom: 15px; transition: all 0.4s ease;
+          }
+
+          .video-viewport {
+            width: 100%;
+            height: clamp(300px, 75vh, 900px);
+            background-color: #0a0a0a;
+            overflow: hidden;
+            position: relative;
+            margin-top: 2vh;
+          }
+
+          .details-row {
+            display: flex;
+            margin-top: -10vh;
+            padding-bottom: 10vh;
+            position: relative;
+            z-index: 15;
+          }
+          .row-reverse { justify-content: flex-end; }
+
+          .details-card {
+            width: 100%;
+            max-width: 600px;
+            padding: clamp(30px, 5vw, 80px);
+            background-color: rgba(5, 5, 5, 0.9);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.05);
+          }
+
+          .car-quote { font-size: clamp(1.2rem, 2.5vw, 2rem); font-family: serif; font-style: italic; margin-bottom: 30px; }
+          .car-details-text { font-size: clamp(13px, 1.1vw, 15px); line-height: 1.8; opacity: 0.5; margin-bottom: 40px; }
+
+          .specs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 40px; }
+          .spec-item p { font-size: clamp(11px, 1vw, 14px); font-weight: 300; margin: 0; }
+          .spec-line { width: 15px; height: 1px; background: rgba(255,255,255,0.2); margin-top: 8px; }
+
+          .actions-flex { display: flex; gap: 15px; flex-wrap: wrap; }
+          .btn-primary { flex: 1; min-width: 140px; padding: 18px; background: #fff; color: #000; border: none; font-size: 10px; letter-spacing: 2px; font-weight: 700; cursor: pointer; }
+          .btn-secondary { flex: 1; min-width: 140px; padding: 18px; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); font-size: 10px; letter-spacing: 2px; cursor: pointer; }
+
+          .closing-cta { height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 10%; }
+          .divider-line { width: 1px; height: 15vh; background: linear-gradient(to bottom, transparent, #fff); marginBottom: 40px; }
+          .closing-text { font-size: clamp(1.5rem, 4vw, 3.5rem); fontWeight: 100; font-family: serif; maxWidth: 800px; line-height: 1.3; }
+          .return-btn { margin-top: 40px; padding: 20px 50px; background: none; border: 1px solid rgba(255,255,255,0.3); color: #fff; letter-spacing: 5px; font-size: 11px; cursor: pointer; transition: 0.5s; }
+
+          @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+          /* MOBILE OVERRIDES */
+          @media (max-width: 768px) {
+            .model-exhibition-section { min-height: auto; margin-bottom: 15vh; }
+            .sticky-header { position: relative; top: 0; flex-direction: column; align-items: flex-start; gap: 20px; background: none; margin-bottom: 20px;}
+            .details-row { margin-top: 20px; justify-content: center !important; }
+            .details-card { padding: 30px 20px; }
+            .video-viewport { height: 50vh; }
+            .specs-grid { grid-template-columns: 1fr; gap: 20px; }
           }
         `}</style>
       </div>
