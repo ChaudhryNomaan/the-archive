@@ -13,7 +13,7 @@ export default function App() {
   useEffect(() => {
     const handleScroll = () => {
       const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (window.pageYOffset / totalScroll) * 100;
+      const progress = (window.pageYOffset / (totalScroll || 1)) * 100;
       setScrollProgress(progress);
     };
     window.addEventListener('scroll', handleScroll);
@@ -36,7 +36,8 @@ export default function App() {
     fontWeight: location.pathname === path ? '600' : '300',
     borderBottom: location.pathname === path ? '1px solid white' : '1px solid transparent',
     paddingBottom: '4px',
-    pointerEvents: 'auto'
+    pointerEvents: 'auto',
+    transition: 'opacity 0.3s ease, border-bottom 0.3s ease'
   });
 
   return (
@@ -51,8 +52,8 @@ export default function App() {
       {/* 2. NAVIGATION BAR */}
       <nav className="main-nav">
         <div className="nav-logo">
-          <Link to="/" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'white', textDecoration: 'none', letterSpacing: '10px', fontSize: '1.2rem', fontFamily: '"Times New Roman", serif', pointerEvents: 'auto' }}>
-            The Archive
+          <Link to="/" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'white', textDecoration: 'none', letterSpacing: '10px', fontSize: '1.2rem', fontFamily: '"Playfair Display", serif', pointerEvents: 'auto' }}>
+            THE ARCHIVE
           </Link>
           <span className="logo-subtext">BESPOKE ATELIER</span>
         </div>
@@ -64,11 +65,8 @@ export default function App() {
           <Link to="/bespoke" style={navLinkStyle('/bespoke')}>Bespoke</Link>
         </div>
 
-        {/* MOBILE TOGGLE - Transitions to 'X' when open */}
+        {/* MOBILE TOGGLE */}
         <button className="mobile-toggle" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-          {/* <span style={{ fontSize: '9px', letterSpacing: '2px', marginRight: '10px', opacity: 0.6 }}>
-            {isMobileMenuOpen ? 'CLOSE' : 'MENU'}
-          </span> */}
           <div className="burger-icon">
             <div className={`line ${isMobileMenuOpen ? 'open' : ''}`} />
             <div className={`line ${isMobileMenuOpen ? 'open' : ''}`} />
@@ -79,28 +77,28 @@ export default function App() {
       {/* 3. MOBILE MENU OVERLAY */}
       <div className={`mobile-overlay ${isMobileMenuOpen ? 'active' : ''}`}>
         <div className="mobile-links">
-          <Link to="/">Home</Link>
-          <Link to="/models">Models</Link>
-          <Link to="/gallery">Gallery</Link>
-          <Link to="/bespoke">Bespoke</Link>
+          <Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link>
+          <Link to="/models" className={location.pathname === '/models' ? 'active' : ''}>Models</Link>
+          <Link to="/gallery" className={location.pathname === '/gallery' ? 'active' : ''}>Gallery</Link>
+          <Link to="/bespoke" className={location.pathname === '/bespoke' ? 'active' : ''}>Bespoke</Link>
           
-          {/* Explicit Close Button for UX clarity */}
           <button 
             onClick={() => setIsMobileMenuOpen(false)}
             style={{ 
               background: 'none', border: '1px solid rgba(255,255,255,0.2)', 
               color: 'white', marginTop: '40px', padding: '15px 40px',
-              fontSize: '10px', letterSpacing: '5px', cursor: 'pointer'
+              fontSize: '10px', letterSpacing: '5px', cursor: 'pointer',
+              textTransform: 'uppercase'
             }}
           >
-            EXIT EXHIBITION
+            Exit Exhibition
           </button>
         </div>
       </div>
 
       {/* 4. PAGE VIEWPORT */}
       <div className="page-transition-wrapper">
-        <Routes>
+        <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />} />
           <Route path="/models" element={<Models />} />
           <Route path="/gallery" element={<Gallery />} />
@@ -109,7 +107,7 @@ export default function App() {
       </div>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@100;300;600&display=swap');
 
         body { font-family: 'Inter', sans-serif; margin: 0; background: #050505; }
 
@@ -122,7 +120,7 @@ export default function App() {
 
         .nav-logo, .nav-links-desktop, .mobile-toggle { pointer-events: auto; }
 
-        .logo-subtext { font-size: 8px; letter-spacing: 5px; opacity: 0.5; display: block; margin-top: 5px; color: white; }
+        .logo-subtext { font-size: 8px; letter-spacing: 5px; opacity: 0.5; display: block; margin-top: 5px; color: white; text-transform: uppercase; }
 
         .nav-links-desktop { display: flex; gap: 40px; margin-top: 10px; }
 
@@ -132,28 +130,40 @@ export default function App() {
         }
 
         .burger-icon { display: flex; flex-direction: column; gap: 6px; }
-        .burger-icon .line { width: 20px; height: 1px; background: white; transition: 0.4s ease; }
+        .burger-icon .line { width: 24px; height: 1px; background: white; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .burger-icon .line.open:nth-child(1) { transform: translateY(3.5px) rotate(45deg); }
         .burger-icon .line.open:nth-child(2) { transform: translateY(-3.5px) rotate(-45deg); }
 
         .mobile-overlay {
           position: fixed; inset: 0; background: #050505; 
           z-index: 9500; display: flex; justify-content: center; align-items: center;
-          transform: translateY(-100%); transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+          transform: translateY(-100%); transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .mobile-overlay.active { transform: translateY(0); }
 
-        .mobile-links { display: flex; flex-direction: column; gap: 35px; text-align: center; }
+        .mobile-links { display: flex; flex-direction: column; gap: 30px; text-align: center; }
         .mobile-links a { 
-          color: white; text-decoration: none; font-size: 1.8rem; 
-          letter-spacing: 8px; text-transform: uppercase; font-weight: 200;
+          color: white; text-decoration: none; font-size: 2rem; 
+          letter-spacing: 10px; text-transform: uppercase; font-weight: 200;
+          font-family: 'Playfair Display', serif;
+          opacity: 0.4;
+          transition: 0.4s;
+        }
+        .mobile-links a.active { opacity: 1; }
+
+        .page-transition-wrapper { 
+          animation: fadeIn 1.5s ease;
         }
 
-        .page-transition-wrapper { position: relative; z-index: 1; }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
 
         @media (max-width: 900px) {
           .nav-links-desktop { display: none; }
           .mobile-toggle { display: flex; }
+          .main-nav { padding: 30px 6%; }
         }
       `}</style>
     </div>

@@ -24,7 +24,7 @@ const DATA = [
     hex: "#0F0F0F",
     meta: { v: "6.75L V12", t: "900 NM", s: "SILENT" },
     desc: "A sanctuary for those who lead. Phantom represents the pinnacle of human craft, where every stitch and veneer is an echo of perfection.",
-    video: "/images/bughatti.mp4" // Path to your video in public/images
+    video: "/images/bughatti.mp4" 
   },
   {
     id: "02",
@@ -33,7 +33,7 @@ const DATA = [
     hex: "#0A1015",
     meta: { v: "DUAL MOTOR", t: "900 NM", s: "ELECTRIC" },
     desc: "The world's first ultra-luxury electric super-coupe. A spiritual successor to the Phantom Coupé, representing the dawn of a new era.",
-    video: "/images/dodge.mp4" // Your BMW video
+    video: "/images/dodge.mp4" 
   },
   {
     id: "03",
@@ -42,9 +42,62 @@ const DATA = [
     hex: "#080808",
     meta: { v: "6.75L V12", t: "850 NM", s: "ALL-TERRAIN" },
     desc: "Unshakeable in its resolve. Cullinan provides the ultimate luxury experience, regardless of the terrain beneath its wheels.",
-    video: "/images/porche.mp4" // Path to your video in public/images
+    video: "/images/porche.mp4" 
   }
 ];
+
+const LuxuryPreloader = ({ progress }) => (
+  <div style={{
+    position: 'fixed',
+    inset: 0,
+    backgroundColor: '#050505',
+    zIndex: 10000,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    transition: 'opacity 1s cubic-bezier(0.16, 1, 0.3, 1)'
+  }}>
+    <div style={{
+      width: '1px',
+      height: '150px',
+      background: 'rgba(255,255,255,0.1)',
+      position: 'relative',
+      marginBottom: '40px'
+    }}>
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: `${progress}%`,
+        background: '#fff',
+        transition: 'height 0.4s ease'
+      }} />
+    </div>
+    <h2 style={{
+      fontFamily: 'serif',
+      fontSize: '10px',
+      letterSpacing: '15px',
+      color: '#fff',
+      marginRight: '-15px',
+      opacity: 0.6,
+      textTransform: 'uppercase'
+    }}>
+      The Archive
+    </h2>
+    <span style={{
+      fontSize: '8px',
+      letterSpacing: '4px',
+      marginTop: '20px',
+      color: '#C5B358',
+      opacity: progress > 90 ? 1 : 0.4,
+      transition: 'opacity 0.5s'
+    }}>
+      {progress < 100 ? `SYNCHRONIZING ${progress}%` : "ENTERING EXHIBITION"}
+    </span>
+  </div>
+);
 
 const Cursor = () => {
   const [pos, setPos] = useState({ x: 0, y: 0 });
@@ -95,6 +148,22 @@ export default function Gallery() {
   const navigate = useNavigate();
   const [index, setIndex] = useState(0);
   const [transitioning, setTransitioning] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadProgress, setLoadProgress] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLoadProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setTimeout(() => setLoading(false), 800);
+          return 100;
+        }
+        return prev + 1;
+      });
+    }, 30);
+    return () => clearInterval(interval);
+  }, []);
 
   const changeSlide = useCallback((dir) => {
     if (transitioning) return;
@@ -110,57 +179,56 @@ export default function Gallery() {
 
   return (
     <div className="gallery-root">
-      <Cursor />
-      <HUD 
-        current={index} 
-        total={DATA.length} 
-        onNext={() => changeSlide('next')} 
-        onPrev={() => changeSlide('prev')}
-        exit={() => navigate('/')}
-      />
+      {loading && <LuxuryPreloader progress={loadProgress} />}
+      <div style={{ opacity: loading ? 0 : 1, transition: 'opacity 2s ease', height: '100%', width: '100%' }}>
+        <Cursor />
+        <HUD 
+          current={index} 
+          total={DATA.length} 
+          onNext={() => changeSlide('next')} 
+          onPrev={() => changeSlide('prev')}
+          exit={() => navigate('/')}
+        />
 
-      <main className={`canvas ${transitioning ? 'is-blur' : ''}`}>
-        
-        {/* BACKGROUND VIDEO LAYER */}
-        <div className="background-wrap">
-          <video 
-            key={DATA[index].video} // Essential for re-triggering the video source swap
-            autoPlay 
-            muted 
-            loop 
-            playsInline 
-            className="background-asset"
-          >
-            <source src={DATA[index].video} type="video/mp4" />
-          </video>
-          <div className="scrim" />
-        </div>
-
-        {/* DATA EXHIBITION LAYER */}
-        <section className="exhibition-frame">
-          <div className="left-meta">
-            <div className="reveal-box">
-              <span className="accent-label">{DATA[index].subtitle}</span>
-            </div>
-            <div className="reveal-box">
-              <h1 className="big-title">{DATA[index].title}</h1>
-            </div>
-            <div className="reveal-box">
-              <p className="description-text">{DATA[index].desc}</p>
-            </div>
+        <main className={`canvas ${transitioning ? 'is-blur' : ''}`}>
+          <div className="background-wrap">
+            <video 
+              key={DATA[index].video}
+              autoPlay 
+              muted 
+              loop 
+              playsInline 
+              className="background-asset"
+            >
+              <source src={DATA[index].video} type="video/mp4" />
+            </video>
+            <div className="scrim" />
           </div>
 
-          <div className="right-stats">
-            {Object.entries(DATA[index].meta).map(([key, val]) => (
-              <div key={key} className="stat-unit">
-                <span className="stat-label">{key === 'v' ? 'POWERPLANT' : key === 't' ? 'TORQUE' : 'NATURE'}</span>
-                <span className="stat-value">{val}</span>
+          <section className="exhibition-frame">
+            <div className="left-meta">
+              <div className="reveal-box">
+                <span className="accent-label">{DATA[index].subtitle}</span>
               </div>
-            ))}
-          </div>
-        </section>
+              <div className="reveal-box">
+                <h1 className="big-title">{DATA[index].title}</h1>
+              </div>
+              <div className="reveal-box">
+                <p className="description-text">{DATA[index].desc}</p>
+              </div>
+            </div>
 
-      </main>
+            <div className="right-stats">
+              {Object.entries(DATA[index].meta).map(([key, val]) => (
+                <div key={key} className="stat-unit">
+                  <span className="stat-label">{key === 'v' ? 'POWERPLANT' : key === 't' ? 'TORQUE' : 'NATURE'}</span>
+                  <span className="stat-value">{val}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        </main>
+      </div>
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Inter:wght@100;300;600&display=swap');
